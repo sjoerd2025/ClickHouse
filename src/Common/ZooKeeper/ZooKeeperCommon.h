@@ -244,15 +244,10 @@ struct ZooKeeperCreateRequest final : public CreateRequest, ZooKeeperRequest
 
     OpNum getOpNum() const override
     {
-        if (include_stats)
-        {
-            chassert(!include_ttl);
-            return OpNum::Create2;
-        }
         if (include_ttl)
-        {
             return OpNum::CreateTTL;
-        }
+        if (include_stats)
+            return OpNum::Create2;
         return not_exists ? OpNum::CreateIfNotExists : OpNum::Create;
     }
 

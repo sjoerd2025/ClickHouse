@@ -301,10 +301,12 @@ void ZooKeeperCreateRequest::readImpl(ReadBuffer & in)
             break;
         case CreateMode::PERSISTENT_WITH_TTL:
             include_ttl = true;
+            include_stats = false;
             break;
         case CreateMode::PERSISTENT_SEQUENTIAL_WITH_TTL:
             include_ttl = true;
             is_sequential = true;
+            include_stats = false;
             break;
     }
 
