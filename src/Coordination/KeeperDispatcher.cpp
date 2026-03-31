@@ -220,6 +220,9 @@ void KeeperDispatcher::requestThread()
                 /// SessionID uses internal IDs (session_id = -1), ignore it just to be safe.
                 auto is_stale_session_request = [&](const KeeperRequestForSession & req) -> bool
                 {
+                    /// Internal sessions (negative IDs, e.g. TTL garbage collector) are always live.
+                    if (req.session_id < 0)
+                        return false;
                     if (req.request->getOpNum() != Coordination::OpNum::Close
                         && req.request->getOpNum() != Coordination::OpNum::SessionID)
                     {
