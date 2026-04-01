@@ -1644,6 +1644,7 @@ std::vector<std::string> KeeperStateMachine<Storage>::getExpiredTTLPathsForGarba
     return storage->collectExpiredTTLPaths(now_ms);
 }
 
+template<typename Storage>
 void KeeperStateMachine<Storage>::cancelIfHasUnfinishedSnapshotReceive()
 {
     if (!snapshot_receive_ctx)
