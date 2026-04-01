@@ -26,6 +26,7 @@
 #include <Common/thread_local_rng.h>
 #include <Coordination/CoordinationSettings.h>
 #include <Coordination/KeeperReconfiguration.h>
+#include <Common/FailPoint.h>
 
 #include <IO/ReadHelpers.h>
 #include <Disks/IDisk.h>
@@ -73,6 +74,11 @@ using namespace std::chrono_literals;
 
 namespace DB
 {
+
+namespace FailPoints
+{
+    extern const char keeper_ttl_gc_pause_before_remove[];
+}
 
 namespace CoordinationSetting
 {
@@ -559,6 +565,7 @@ void KeeperDispatcher::garbageCollectorThread()
             if (server->checkInit() && isLeader())
             {
                 std::vector<std::string> paths = server->getExpiredTTLPathsForGarbageCollector();
+                FailPointInjection::pauseFailPoint(FailPoints::keeper_ttl_gc_pause_before_remove);
                 for (auto & path : paths)
                 {
                     auto request = Coordination::ZooKeeperRequestFactory::instance().get(Coordination::OpNum::TryRemove);
